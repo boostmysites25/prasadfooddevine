@@ -11,7 +11,7 @@ const Footer = () => {
               <img
                 src={logo}
                 alt="Prasad Food Divine Logo"
-                className="h-16 mr-2"
+                className="h-24 mr-2 p-2 bg-white rounded-lg"
               />
             </div>
             <p className="text-gray-300 mb-6 max-w-md">

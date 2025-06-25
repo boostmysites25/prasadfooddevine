@@ -5,7 +5,7 @@ const Gallery = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [selectedImage, setSelectedImage] = useState(null);
-  const lightboxRef = useRef < HTMLDivElement > null;
+  const lightboxRef = useRef(null);
 
   // Gallery data
   const galleryImages = [
@@ -137,6 +137,76 @@ const Gallery = () => {
   const closeLightbox = () => {
     setSelectedImage(null);
     document.body.style.overflow = "auto";
+  };
+  
+  // Handle image sharing
+  const shareImage = async (image) => {
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share({
+          title: image.title,
+          text: `Check out this ${image.category} image from Prasad Food Divine: ${image.title}`,
+          url: window.location.href,
+        });
+      } else {
+        // Fallback for browsers that don't support the Web Share API
+        // Copy the URL to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Error sharing image:', error);
+    }
+  };
+  
+  // Handle image download
+  const downloadImage = async (image) => {
+    try {
+      // Show loading state
+      const downloadBtn = document.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Downloading...';
+        downloadBtn.disabled = true;
+      }
+      
+      // Fetch the image
+      const response = await fetch(image.src);
+      const blob = await response.blob();
+      
+      // Create a blob URL
+      const blobUrl = URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      // Set the download attribute with a filename based on the image title
+      link.download = `${image.title.replace(/\s+/g, '-').toLowerCase()}.jpg`;
+      // Set the href to the blob URL
+      link.href = blobUrl;
+      // Append to the document
+      document.body.appendChild(link);
+      // Trigger the download
+      link.click();
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+      
+      // Reset button state
+      if (downloadBtn) {
+        downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> Download';
+        downloadBtn.disabled = false;
+      }
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      alert('Failed to download image. Please try again.');
+      
+      // Reset button state on error
+      const downloadBtn = document.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> Download';
+        downloadBtn.disabled = false;
+      }
+    }
   };
   // Handle click outside lightbox to close
   const handleLightboxClick = (e) => {
@@ -314,7 +384,13 @@ const Gallery = () => {
                           ))}
                         </div> */}
                       </div>
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div 
+                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openLightbox(image);
+                        }}
+                      >
                         <div className="text-white text-center p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                           <i className="fas fa-search-plus text-3xl mb-4"></i>
                           <p className="text-lg font-medium">View Larger</p>
@@ -350,17 +426,47 @@ const Gallery = () => {
         {selectedImage && (
           <div
             ref={lightboxRef}
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center overflow-auto"
             onClick={handleLightboxClick}
           >
-            <div className="relative w-full max-w-5xl mx-auto p-4">
-              {/* Close button */}
-              <button
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 z-10 text-white bg-black/50 hover:bg-black/70 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer !rounded-button whitespace-nowrap"
-              >
-                <i className="fas fa-times"></i>
-              </button>
+            <div className="relative w-full max-w-6xl mx-auto p-4 md:p-6">
+              {/* Control buttons */}
+              <div className="absolute top-4 right-4 z-10 flex space-x-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const imgElement = document.querySelector('.lightbox-image');
+                    if (imgElement) {
+                      if (!document.fullscreenElement) {
+                        if (imgElement.requestFullscreen) {
+                          imgElement.requestFullscreen();
+                        } else if (imgElement.webkitRequestFullscreen) {
+                          imgElement.webkitRequestFullscreen();
+                        } else if (imgElement.msRequestFullscreen) {
+                          imgElement.msRequestFullscreen();
+                        }
+                      } else {
+                        if (document.exitFullscreen) {
+                          document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                          document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                          document.msExitFullscreen();
+                        }
+                      }
+                    }
+                  }}
+                  className="text-white bg-black/50 hover:bg-black/70 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer !rounded-button whitespace-nowrap"
+                >
+                  <i className="fas fa-expand"></i>
+                </button>
+                <button
+                  onClick={closeLightbox}
+                  className="text-white bg-black/50 hover:bg-black/70 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer !rounded-button whitespace-nowrap"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
               {/* Navigation buttons */}
               <button
                 onClick={(e) => {
@@ -381,12 +487,33 @@ const Gallery = () => {
                 <i className="fas fa-chevron-right"></i>
               </button>
               {/* Image */}
-              <div className="w-full h-[70vh] flex items-center justify-center">
+              <div className="w-full h-[80vh] flex items-center justify-center">
                 <img
                   src={selectedImage.src}
                   alt={selectedImage.title}
-                  className="max-w-full max-h-full object-contain"
-                  onClick={(e) => e.stopPropagation()}
+                  className="max-w-full max-h-full object-contain cursor-zoom-in lightbox-image"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Toggle fullscreen mode for the image
+                    const imgElement = e.target;
+                    if (!document.fullscreenElement) {
+                      if (imgElement.requestFullscreen) {
+                        imgElement.requestFullscreen();
+                      } else if (imgElement.webkitRequestFullscreen) { /* Safari */
+                        imgElement.webkitRequestFullscreen();
+                      } else if (imgElement.msRequestFullscreen) { /* IE11 */
+                        imgElement.msRequestFullscreen();
+                      }
+                    } else {
+                      if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                      } else if (document.webkitExitFullscreen) { /* Safari */
+                        document.webkitExitFullscreen();
+                      } else if (document.msExitFullscreen) { /* IE11 */
+                        document.msExitFullscreen();
+                      }
+                    }
+                  }}
                 />
               </div>
               {/* Image details */}
@@ -419,10 +546,24 @@ const Gallery = () => {
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                   <div className="flex space-x-3">
-                    <button className="flex items-center text-gray-600 hover:text-[#800000] transition-colors cursor-pointer !rounded-button whitespace-nowrap">
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        shareImage(selectedImage);
+                      }}
+                      className="share-btn flex items-center text-gray-600 hover:text-[#800000] transition-colors cursor-pointer !rounded-button whitespace-nowrap"
+                    >
                       <i className="fas fa-share-alt mr-2"></i> Share
                     </button>
-                    <button className="flex items-center text-gray-600 hover:text-[#800000] transition-colors cursor-pointer !rounded-button whitespace-nowrap">
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        downloadImage(selectedImage);
+                      }}
+                      className="download-btn flex items-center text-gray-600 hover:text-[#800000] transition-colors cursor-pointer !rounded-button whitespace-nowrap"
+                    >
                       <i className="fas fa-download mr-2"></i> Download
                     </button>
                   </div>
