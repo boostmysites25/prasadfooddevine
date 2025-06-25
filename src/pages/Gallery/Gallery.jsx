@@ -276,7 +276,7 @@ const Gallery = () => {
           </div>
         </div>
         {/* Category Navigation */}
-        {/* <div className="sticky top-16 bg-white shadow-md z-40">
+        <div className="sticky top-20 bg-white shadow-md z-40">
           <div className="container mx-auto px-6 py-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div className="flex overflow-x-auto pb-3 md:pb-0 space-x-4 md:space-x-8">
@@ -308,7 +308,7 @@ const Gallery = () => {
                   />
                   <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
-                <div className="relative">
+                {/* <div className="relative">
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
@@ -318,7 +318,7 @@ const Gallery = () => {
                     <option value="oldest">Oldest First</option>
                   </select>
                   <i className="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                </div>
+                </div> */}
               </div>
             </div>
             
@@ -342,7 +342,7 @@ const Gallery = () => {
               )}
             </div>
           </div>
-        </div> */}
+        </div>
         {/* Gallery Grid */}
         <div className="py-12 bg-[#FFFDD0]">
           <div className="container mx-auto px-6">

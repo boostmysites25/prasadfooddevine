@@ -42,21 +42,20 @@ const BlogDetails = () => {
         <div className="bg-white border-b border-gray-200">
           <div className="container mx-auto px-6 py-3">
             <div className="flex items-center text-sm text-gray-600">
-              <a
-                href="https://readdy.ai/home/55548fe4-7589-4e6a-8f24-b1011f92292e/dbde8e9e-afc8-408a-8679-4ca616319c1c"
-                data-readdy="true"
+              <Link
+                to="/"
                 className="hover:text-[#800000] transition-colors cursor-pointer"
               >
                 Home
-              </a>
+              </Link>
               <span className="mx-2">&gt;</span>
-              <a
-                href="https://readdy.ai/home/55548fe4-7589-4e6a-8f24-b1011f92292e/e144530f-8758-468e-8b0c-b41e9de02be2"
+              <Link
+                to="/blogs"
                 data-readdy="true"
                 className="hover:text-[#800000] transition-colors cursor-pointer"
               >
-                Blog
-              </a>
+                Blogs
+              </Link>
               <span className="mx-2">&gt;</span>
               <span className="text-[#800000]">The Art of Indian Spices</span>
             </div>
