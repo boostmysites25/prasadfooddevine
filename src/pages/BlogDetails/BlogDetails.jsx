@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const BlogDetails = () => {
   // Related posts
   const relatedPosts = [
@@ -67,7 +69,7 @@ const BlogDetails = () => {
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Main Content */}
               <div className="lg:w-full">
-              {/* <div className="lg:w-3/4"> */}
+                {/* <div className="lg:w-3/4"> */}
                 {/* Back to Blog Button */}
                 <a
                   href="https://readdy.ai/home/55548fe4-7589-4e6a-8f24-b1011f92292e/e144530f-8758-468e-8b0c-b41e9de02be2"
@@ -421,9 +423,11 @@ const BlogDetails = () => {
                           />
                         </div>
                         <div>
-                          <h4 className="text-lg font-medium text-gray-800 group-hover:text-[#FF9933] transition-colors mb-2 cursor-pointer">
-                            {post.title}
-                          </h4>
+                          <Link to={`/blogs/${post.title}`} className="block">
+                            <h4 className="text-lg font-medium text-gray-800 group-hover:text-[#FF9933] transition-colors mb-2 cursor-pointer">
+                              {post.title}
+                            </h4>
+                          </Link>
                           <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                             {post.excerpt}
                           </p>
@@ -431,10 +435,10 @@ const BlogDetails = () => {
                             <span className="bg-[#FF9933]/10 text-[#FF9933] text-xs px-2 py-1 rounded-full">
                               {post.category}
                             </span>
-                            <span className="text-gray-500 text-xs flex items-center">
+                            {/* <span className="text-gray-500 text-xs flex items-center">
                               <i className="far fa-clock mr-1"></i>
                               {post.readTime}
-                            </span>
+                            </span> */}
                           </div>
                         </div>
                       </div>
