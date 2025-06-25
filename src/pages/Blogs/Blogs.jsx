@@ -610,9 +610,12 @@ const Blogs = () => {
                                   {post.likes}
                                 </span>
                               </div> */}
-                              <button className="text-[#FF9933] hover:text-[#e88a2a] text-sm font-medium transition-colors cursor-pointer !rounded-button whitespace-nowrap">
+                              <Link
+                                to={`/blogs/${post.title}`}
+                                className="text-[#FF9933] hover:text-[#e88a2a] text-sm font-medium transition-colors cursor-pointer !rounded-button whitespace-nowrap"
+                              >
                                 Read More
-                              </button>
+                              </Link>
                             </div>
                           </div>
                         </div>

@@ -539,9 +539,12 @@ const Home = () => {
                         <p className="text-xs text-gray-500">{post.date}</p>
                       </div>
                     </div> */}
-                    <button className="text-[#FF9933] hover:text-[#e88a2a] transition-colors !rounded-button whitespace-nowrap">
+                    <Link
+                      to={`/blogs/${post.title}`}
+                      className="text-[#FF9933] hover:text-[#e88a2a] transition-colors !rounded-button whitespace-nowrap"
+                    >
                       Read More <i className="fas fa-arrow-right ml-1"></i>
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
