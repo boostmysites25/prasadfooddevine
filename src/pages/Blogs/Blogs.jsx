@@ -410,7 +410,7 @@ const Blogs = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center py-4 space-y-4 md:space-y-0">
               {/* Category Tabs */}
               <div className="flex overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-                <div className="flex space-x-1 md:space-x-2">
+                <div className="flex gap-2 flex-wrap">
                   {categories.map((category) => (
                     <button
                       key={category.id}
